@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SuperShop.Data.Entities;
+using System;
+using System.Threading.Tasks;
 
 namespace SuperShop.Data
 {
@@ -10,5 +12,7 @@ namespace SuperShop.Data
         {
             
         }
+
+       
     }
 }
