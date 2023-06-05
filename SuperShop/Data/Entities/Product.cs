@@ -31,5 +31,18 @@ namespace SuperShop.Data.Entities
 
         public User User { get; set; }
 
+        // Passo 44: Criar uma propriedade so de leitura para a api, para o utilizador conseguir ler a imagem
+        public string ImageFullPath
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(ImageUrl))
+                {
+                    return null;
+                }
+                return $"https://localhost:44380{ImageUrl.Substring(1)}"; // caminho da imagem
+            }
+        }
+
     }
 }

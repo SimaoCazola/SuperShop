@@ -1,4 +1,5 @@
-﻿@model SuperShop.Data.Entities.Product
+﻿@*Passo 24: Alterar o model para ProductViewModel*@
+@model SuperShop.Models.ProductViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -10,9 +11,12 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+       @* Passo 25: Inserir o enctype="multipart/form-data"*@
+        <form asp-action="Edit" enctype="multipart/form-data"> 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+            @* Passo 27: Inserir a ImageUrl escondido no caso de o utilizador nao escolher uma imagem ou seja vazio*@
+            <input type="hidden" asp-for="ImageUrl" />
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -24,9 +28,10 @@
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ImageUrl" class="control-label"></label>
-                <input asp-for="ImageUrl" class="form-control" />
-                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                @* Passo 26: Inserir o ImageFile e adiccionar no input o type="file" "*@
+                <label asp-for="ImageFile" class="control-label"></label>
+                <input asp-for="ImageFile" class="form-control" type="file"/>
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="LastPurchase" class="control-label"></label>
@@ -53,6 +58,14 @@
                 <a asp-action="Index" class="btn btn-success">Back to List</a>
             </div>
         </form>
+    </div>
+    @*Passo 36: Abrir uma dive e dentro desta dive criar as colunas de 4*@
+    <div class="col-md-4">
+        @* Passo 37: Inserir a imagem Editada na web no HTML*@
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))  @*Se nao haver imagem (vazio ou nulo), cria uma imagem*@
+        {
+            <img src="@Url.Content(Model.ImageUrl)" alt="Image" style="width:300px; height:450px; max-width:100%; height:auto">
+        }
     </div>
 </div>
 

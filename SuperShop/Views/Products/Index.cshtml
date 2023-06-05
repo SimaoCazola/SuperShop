@@ -18,10 +18,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Price)
             </th>
+                @* Passo 20: apagar o url da imagem*@
             <th>
-                @Html.DisplayNameFor(model => model.ImageUrl)
-            </th>
-            <th>
+                
                 @Html.DisplayNameFor(model => model.LastPurchase)
             </th>
             <th>
@@ -46,8 +45,12 @@
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ImageUrl)
-            </td>
+               @* Passo 21: Inserir a imagem na web no HTML*@
+                    @if (!string.IsNullOrEmpty(item.ImageUrl))  @*Se nao haver imagem (vazio ou nulo), cria uma imagem*@
+                    {
+                        <img src="@Url.Content(item.ImageUrl)" alt="Image" style="width:100px; height:150px; max-width:100%; height:auto">
+                    }
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.LastPurchase)
             </td>
