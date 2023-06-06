@@ -17,13 +17,18 @@ namespace SuperShop.Controllers
     {
         private readonly IProductRepository _productRepository;
         private readonly IUserHelper _userHelper;
+        private readonly IImageHelper _imageHelper;
+        private readonly IConverterHelper _converterHelper;
 
+        // Passo 56: Inserir o interface ImageHelper das imagens no construtor do controlador
         public ProductsController(
             IProductRepository productRepository,
-            IUserHelper userHelper)
+            IUserHelper userHelper, IImageHelper imageHelper, IConverterHelper converterHelper)
         {
             _productRepository = productRepository;
             _userHelper = userHelper;
+            _imageHelper = imageHelper;
+            _converterHelper = converterHelper;
         }
 
         // GET: Products
@@ -67,25 +72,15 @@ namespace SuperShop.Controllers
                 var path = string.Empty;
                 if(model.ImageFile!=null && model.ImageFile.Length > 0)
                 {
-                    // Passo 49: Resolver nomes repetidos usando o guid
-                    var guid = Guid.NewGuid().ToString(); // converter um objecto do do tipo Guid e gusrdar numa variavel guid
-                    var file = $"{guid}.jpg"; // Vou ter o nome do guid e o tipo de imagem
 
-
-                    // dar o caminho
-                    path = Path.Combine(Directory.GetCurrentDirectory(),
-                        "wwwroot\\images\\products", file);  // Passo 50:Inserir o File dentro do caminho e substituindo o filename
-                    // Gravar no servidor
-                    using (var stream = new FileStream(path, FileMode.Create))
-                    {
-                        await model.ImageFile.CopyToAsync(stream);  // Guardar a imagem no servidor
-                    }
-
-                    path = $"~/images/products/{file}"; // Inserir o file aqui tambem
+                    // Passo 49: Resolver nomes repetidos usando o guid: Transferido para um metodo
+                    // Passo 50:Inserir o File dentro do caminho e substituindo o filename: Trasferido para um metodo
+                    // Passo 57: Definir o caminho ---> Path: Transferido para um metodo
+                    path = await _imageHelper.UploadImageAsync(model.ImageFile, "products");
                 }
 
                 //criacao da variavel que guarda o a conversao do metodo ToProduct
-                var product = this.ToProduct(model, path);
+                var product = _converterHelper.ToProduct(model, path, true); // Passo 60: Aplicar o metodo no cotrolador
 
 
                 //TODO: Modificar para o user que tiver logado
@@ -97,24 +92,7 @@ namespace SuperShop.Controllers
             return View(model);
         }
 
-        // Passo 19: conversao  do product para ToProduct dentro do metodo:
-        private Product ToProduct(ProductViewModel model, string path)
-        {
-
-            return new Product
-            {
-                Id = model.Id,
-                ImageUrl=path,
-                IsAvailable=model.IsAvailable,
-                LastPurchase=model.LastPurchase,
-                LastSale=model.LastSale,
-                Name=model.Name,
-                Price=model.Price,
-                Stock=model.Stock,
-                User=model.User
-            };
-        }
-
+        // Passo 19: conversao  do product para ToProduct dentro do metodo:Transferido
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -130,28 +108,13 @@ namespace SuperShop.Controllers
             }
 
 
-            //Passo 22: Criacao da variavel que guarda a conversaoi do metodo ToProductViewModel
-            var model = this.ToProductViewModel(product);
+            //Passo 22: Criacao da variavel que guarda a conversaoi do metodo ToProductViewModel: Transferido num metodo
+            //Passo 61: Aplicar o metodo da conversao
+            var model= _converterHelper.ToProductViewModel(product);
             return View(model);
         }
 
-        // Passo 23: codigo da conversao do product para productviewmodel dentro metodo
-        private ProductViewModel ToProductViewModel(Product product)
-        {
-            return new ProductViewModel
-            {
-                Id= product.Id,
-                IsAvailable = product.IsAvailable,
-                LastPurchase=product.LastPurchase,
-                LastSale=product.LastSale,
-                Name=product.Name,
-                Price=product.Price,
-                Stock=product.Stock,
-                ImageUrl = product.ImageUrl,
-                User=product.User
-                
-            };
-        }
+        // Passo 23: codigo da conversao do product para productviewmodel dentro metodo: Transferido
 
         // POST: Products/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -186,8 +149,9 @@ namespace SuperShop.Controllers
                         path = $"~/images/products/{file}";
                     }
 
-                    // Passo 32: Fazer a conversao para o metodo ToProduct
-                    var product=this.ToProduct(model, path);
+                    // Passo 32: Fazer a conversao para o metodo ToProduct: Transferido
+                    //Passo 62: Aplicar o metodo da conversao
+                    var product = _converterHelper.ToProduct(model, path, false); // É falso porque não é novo
 
 
                     //TODO: Modificar para o user que tiver logado

@@ -48,6 +48,8 @@ namespace SuperShop
 
             services.AddTransient<SeedDb>();// cria o objecto e apaga e ja nao cria objecto do mesmo tipo
             services.AddScoped<IUserHelper,UserHelper>();
+            services.AddScoped<IImageHelper, ImageHelper>(); // Passo 55: Adicionar servico das imagens
+            services.AddScoped<IConverterHelper, ConverterHelper>(); // Passo 59: Injectar servicos de conversao
 
             services.AddScoped<IProductRepository, ProductRepository>();  // cria o objecto e depois apaga quando criar novo objecto com os mesmos dados ou tipo
 
