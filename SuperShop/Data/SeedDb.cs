@@ -44,10 +44,10 @@ namespace SuperShop.Data
 
             if (!_context.Products.Any())
             {
-                AddProduct("iPhone", user);
-                AddProduct("Huawei", user);
-                AddProduct("iPad", user);
-                AddProduct("SumSung", user);
+                AddProduct("Camisa Vermelha", user);
+                AddProduct("Camisa amarela", user);
+                AddProduct("Camisa Castanha", user);
+                AddProduct("Casaco Vermelho", user);
                 await _context.SaveChangesAsync();
             }
         }
