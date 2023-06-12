@@ -17,17 +17,17 @@ namespace SuperShop.Controllers
     {
         private readonly IProductRepository _productRepository;
         private readonly IUserHelper _userHelper;
-        private readonly IImageHelper _imageHelper;
+        private readonly IBlobHelper _lobHelper;
         private readonly IConverterHelper _converterHelper;
 
         // Passo 56: Inserir o interface ImageHelper das imagens no construtor do controlador
         public ProductsController(
             IProductRepository productRepository,
-            IUserHelper userHelper, IImageHelper imageHelper, IConverterHelper converterHelper)
+            IUserHelper userHelper, IBlobHelper blobHelper, IConverterHelper converterHelper)
         {
             _productRepository = productRepository;
             _userHelper = userHelper;
-            _imageHelper = imageHelper;
+            _lobHelper = blobHelper;
             _converterHelper = converterHelper;
         }
 
@@ -69,18 +69,18 @@ namespace SuperShop.Controllers
         {
             if (ModelState.IsValid)
             {
-                var path = string.Empty;
+                Guid imageId = Guid.Empty;
                 if(model.ImageFile!=null && model.ImageFile.Length > 0)
                 {
 
                     // Passo 49: Resolver nomes repetidos usando o guid: Transferido para um metodo
                     // Passo 50:Inserir o File dentro do caminho e substituindo o filename: Trasferido para um metodo
                     // Passo 57: Definir o caminho ---> Path: Transferido para um metodo
-                    path = await _imageHelper.UploadImageAsync(model.ImageFile, "products");
+                    imageId = await _lobHelper.UploadBlobAsync(model.ImageFile, "products");
                 }
 
                 //criacao da variavel que guarda o a conversao do metodo ToProduct
-                var product = _converterHelper.ToProduct(model, path, true); // Passo 60: Aplicar o metodo no cotrolador
+                var product = _converterHelper.ToProduct(model, imageId, true); // Passo 60: Aplicar o metodo no cotrolador
 
 
                 //TODO: Modificar para o user que tiver logado
@@ -129,29 +129,26 @@ namespace SuperShop.Controllers
             {
                 try
                 {
-                    // Passo 30: Criar o caminho path da Imagem do tipo model
-                    var path = model.ImageUrl;
-                    // Passo 31: Fazer a verificacao se tem uma imagem selecionada
+                   Guid imageId = model.ImageId;
                     if(model.ImageFile !=null && model.ImageFile.Length > 0)
                     {
 
-                        // Passo 51: Resolver nomes repetidos usando o guid
-                        var guid = Guid.NewGuid().ToString(); // converter um objecto do do tipo Guid e gusrdar numa variavel guid
-                        var file = $"{guid}.jpg"; // Vou ter o nome do guid e o tipo de imagem
 
-                        path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\products",
-                            file);
+                        ////var guid = Guid.NewGuid().ToString(); // converter um objecto do do tipo Guid e gusrdar numa variavel guid
+                        ////var file = $"{guid}.jpg"; // Vou ter o nome do guid e o tipo de imagem
 
-                        using (var stream = new FileStream(path, FileMode.Create))
-                        {
-                            await model.ImageFile.CopyToAsync(stream);  // Guardar a imagem no servidor
-                        }
-                        path = $"~/images/products/{file}";
+                        imageId = await _lobHelper.UploadBlobAsync(model.ImageFile, "products");
+
+                        //using (var stream = new FileStream(path, FileMode.Create))
+                        //{
+                        //    await model.ImageFile.CopyToAsync(stream);  // Guardar a imagem no servidor
+                        //}
+                        //path = $"~/images/products/{file}";
                     }
 
                     // Passo 32: Fazer a conversao para o metodo ToProduct: Transferido
                     //Passo 62: Aplicar o metodo da conversao
-                    var product = _converterHelper.ToProduct(model, path, false); // É falso porque não é novo
+                    var product = _converterHelper.ToProduct(model, imageId, false); // É falso porque não é novo
 
 
                     //TODO: Modificar para o user que tiver logado

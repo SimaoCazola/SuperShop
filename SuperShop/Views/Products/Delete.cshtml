@@ -52,10 +52,10 @@
     @*Passo 42: Abrir uma dive e dentro desta dive criar as colunas de 4*@
     <div class="col-md-4">
         @* Passo 43: Inserir a imagem por detalhar na web no HTML*@
-        @if (!string.IsNullOrEmpty(Model.ImageUrl))  @*Se nao haver imagem (vazio ou nulo), cria uma imagem*@
-        {
-            <img src="@Url.Content(Model.ImageUrl)" alt="Image" style="width:300px; height:450px; max-width:100%; height:auto">
-        }
+       @* @if (!string.IsNullOrEmpty(Model.ImageUrl)) *@ @*Se nao haver imagem (vazio ou nulo), cria uma imagem*@
+        
+            <img src="@Url.Content(Model.ImageFullPath)" alt="Image" style="width:300px; height:450px; max-width:100%; height:auto">
+        
     </div>
     
     <form asp-action="Delete">

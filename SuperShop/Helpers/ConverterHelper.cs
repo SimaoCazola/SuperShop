@@ -1,5 +1,6 @@
 ﻿using SuperShop.Data.Entities;
 using SuperShop.Models;
+using System;
 using System.IO;
 
 namespace SuperShop.Helpers
@@ -8,13 +9,13 @@ namespace SuperShop.Helpers
     // criar as instrucoes ou codigos dos metodos criados no interface de conversao 
     public class ConverterHelper : IConverterHelper
     {
-        public Product ToProduct(ProductViewModel model, string path, bool isNew)
+        public Product ToProduct(ProductViewModel model, Guid imageId, bool isNew)
         {
             return new Product
             {
                 Id = isNew ? 0 : model.Id,   // Se o valor for true significa que é o Id é novo,
                                              // entao vou colocar zero automaticamente a base de dados vai atribuir um zero, caso contrario meto o ID que existe
-                ImageUrl = path,
+                ImageId = imageId,
                 IsAvailable = model.IsAvailable,
                 LastPurchase = model.LastPurchase,
                 LastSale = model.LastSale,
@@ -37,7 +38,7 @@ namespace SuperShop.Helpers
                 Name = product.Name,
                 Price = product.Price,
                 Stock = product.Stock,
-                ImageUrl = product.ImageUrl,
+                ImageId = product.ImageId,
                 User = product.User
 
             };

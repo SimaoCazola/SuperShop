@@ -15,7 +15,8 @@ namespace SuperShop.Data.Entities
         public decimal Price { get; set; }
 
         [Display(Name="Image")] // Data notation
-        public string ImageUrl { get; set; }
+        public Guid ImageId { get; set; } // Propriedade que vai guardar as imagens vindas do azure
+        //public string ImageUrl { get; set; }
 
         [Display(Name = "Last Purchase")]
         public DateTime? LastPurchase { get; set; }
@@ -32,17 +33,20 @@ namespace SuperShop.Data.Entities
         public User User { get; set; }
 
         // Passo 44: Criar uma propriedade so de leitura para a api, para o utilizador conseguir ler a imagem
-        public string ImageFullPath
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(ImageUrl))
-                {
-                    return null;
-                }
-                return $"https://localhost:44380{ImageUrl.Substring(1)}"; // caminho da imagem
-            }
-        }
+        public string ImageFullPath => ImageId == Guid.Empty
+            ? $"https://supershopcazolasimao.azurewebsites.net/images/noimage.png"
+            : $"https://supershopcazolastorage.blob.core.windows.net/products/{ImageId}";
+
+        //{
+            //get
+            //{
+            //    if (string.IsNullOrEmpty(ImageUrl))
+            //    {
+            //        return null;
+            //    }
+            //    return $"https://localhost:44380{ImageUrl.Substring(1)}"; // caminho da imagem
+            //}
+        //}
 
     }
 }

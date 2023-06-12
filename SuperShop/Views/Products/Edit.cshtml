@@ -16,7 +16,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             @* Passo 27: Inserir a ImageUrl escondido no caso de o utilizador nao escolher uma imagem ou seja vazio*@
-            <input type="hidden" asp-for="ImageUrl" />
+            <input type="hidden" asp-for="ImageId" />
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -62,10 +62,10 @@
     @*Passo 36: Abrir uma dive e dentro desta dive criar as colunas de 4*@
     <div class="col-md-4">
         @* Passo 37: Inserir a imagem Editada na web no HTML*@
-        @if (!string.IsNullOrEmpty(Model.ImageUrl))  @*Se nao haver imagem (vazio ou nulo), cria uma imagem*@
-        {
-            <img src="@Url.Content(Model.ImageUrl)" alt="Image" style="width:300px; height:450px; max-width:100%; height:auto">
-        }
+  @*  @if (!string.IsNullOrEmpty(Model.ImageFullPath))  @*Se nao haver imagem (vazio ou nulo), cria uma imagem*@
+        
+       <img src="@Url.Content(Model.ImageFullPath)" alt="Image" style="width:300px; height:450px; max-width:100%; height:auto">
+        
     </div>
 </div>
 
