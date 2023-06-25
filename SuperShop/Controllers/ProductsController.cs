@@ -86,7 +86,7 @@ namespace SuperShop.Controllers
 
 
                 //TODO: Modificar para o user que tiver logado
-                product.User = await _userHelper.GetUserByEmailAsync("cazolasimao@gmail.com");
+                product.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                 await _productRepository.CreateAsync(product);    // nao e preciso fazer um metodo em baixo para
                 return RedirectToAction(nameof(Index));
                                                                   // guardar porque ja esta a guardar no repositorio              
@@ -154,7 +154,7 @@ namespace SuperShop.Controllers
 
 
                     //TODO: Modificar para o user que tiver logado
-                    product.User = await _userHelper.GetUserByEmailAsync("cazolasimao@gmail.com");
+                    product.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                     await _productRepository.UpdateAsync(product);
                 }
                 catch (DbUpdateConcurrencyException)
