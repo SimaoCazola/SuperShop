@@ -18,5 +18,9 @@ namespace SuperShop.Helpers
         Task<IdentityResult> UpdateUserAsynce(User user);
 
         Task<IdentityResult> ChangePasswordAsync(User user, string OldPassword, string newPassword);
+
+        Task CheckRoleAsync(string roleName);
+        Task AddUserToRoleAsync(User user, string roleName);
+        Task<bool> IsUserInRoleAsync(User user, string roleName);
     }
 }

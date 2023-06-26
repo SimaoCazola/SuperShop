@@ -56,12 +56,14 @@ namespace SuperShop.Controllers
             return View(product);
         }
 
+        [Authorize(Roles ="Admin")]
         // GET: Products/Create
         public IActionResult Create()
         {
             return View();
         }
 
+        [Authorize(Roles = "Admin, Customer")]
         // POST: Products/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
