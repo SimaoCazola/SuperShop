@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SuperShop.Data.Entities;
 using SuperShop.Helpers;
 using SuperShop.Models;
@@ -100,5 +101,86 @@ namespace SuperShop.Controllers
             }
             return View(model);
         }
+
+        //Create
+
+        public async Task<IActionResult> ChangeUser()
+        {
+            var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+            var model = new ChangeUserViewModel();
+            if (user != null)
+            {
+                model.FirstName = user.FirstName;
+                model.LastName = user.LastName; 
+            }
+
+            return View(model);
+        }
+
+        // Post 
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeUser(ChangeUserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+
+                if (user != null)
+                {
+                    user.FirstName = model.FirstName;
+                    user.LastName = model.LastName;
+                    var response = await _userHelper.UpdateUserAsynce(user);
+                    if(response.Succeeded)
+                    {
+                        ViewBag.UserMessage = "User Updated!";
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, response.Errors.FirstOrDefault().Description);
+
+                    }
+                }
+            }
+            return View(model);
+        }
+
+        // Create for -----> Change password
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        // Post for -----> Change password
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                if (user != null)
+                {
+                    var result = await _userHelper.ChangePasswordAsync(
+                        user, model.OldPassword, model.NewPassword);
+                    if (result.Succeeded)
+                    {
+                        return this.RedirectToAction("ChangeUser");
+                    }
+                    else
+                    {
+                        this.ModelState.AddModelError(string.Empty, result.Errors.FirstOrDefault().Description);
+                        
+                    }
+                  
+                }
+                else
+                {
+                    this.ModelState.AddModelError(string.Empty, "User not found.");
+                }
+
+            }
+            return this.View(model);
+        }
+        
     }
 }
