@@ -39,34 +39,35 @@ namespace SuperShop.Controllers
             return View(_productRepository.GetAll().OrderBy(p=> p.Name)); //Adicionamos o metodo orderby aqui para filtrar as informacoes todas
         }
 
-        // GET: Products/Details/5
+        // GET: Products/Details/5 
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
             }
 
             var product = await _productRepository.GetByIdAsync(id.Value);
             if (product == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound"); // Vou usar a ja a classe not found e dentro do parametro a mensagem que eu quizer mostrar    
             }
 
             return View(product);
         }
 
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         // GET: Products/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        [Authorize(Roles = "Admin, Customer")]
+
         // POST: Products/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin, Customer")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductViewModel model)
@@ -98,17 +99,18 @@ namespace SuperShop.Controllers
 
         // Passo 19: conversao  do product para ToProduct dentro do metodo:Transferido
         // GET: Products/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id == null) 
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
             }
 
             var product = await _productRepository.GetByIdAsync(id.Value);
             if (product == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
             }
 
 
@@ -183,13 +185,13 @@ namespace SuperShop.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
             }
 
             var product = await _productRepository.GetByIdAsync(id.Value);
             if (product == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
             }
 
             return View(product);
@@ -205,6 +207,10 @@ namespace SuperShop.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public IActionResult ProductNotFound()
+        {
+            return View();  
+        }
 
     }
 }

@@ -34,9 +34,9 @@ namespace SuperShop.Data.Entities
 
         // Passo 44: Criar uma propriedade so de leitura para a api, para o utilizador conseguir ler a imagem
         public string ImageFullPath => ImageId == Guid.Empty
-            ? $"https://supershopcazolasimao.azurewebsites.net/images/noimage.png"
-            : $"https://supershopcazolastorage.blob.core.windows.net/products/{ImageId}";
-
+            ? $"https://supershopsa.azurewebsites.net/images/noimage.png"
+            : $"https://supershopsofia.blob.core.windows.net/products/{ImageId}";
+         
         //{
             //get
             //{
