@@ -9,5 +9,7 @@ namespace SuperShop.Data
         // metodo que serve para devolve (Mostrar) todas as encomendas feitas por um user(Utilizador);
         Task<IQueryable<Order>> GetOrderAsync(string userName);
 
+        Task<IQueryable<OrderDetailTemp>> GetDetailTempsAsync(string userName);
+
     }
 }

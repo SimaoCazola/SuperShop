@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using SuperShop.Data.Entities;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SuperShop.Data
@@ -19,6 +21,26 @@ namespace SuperShop.Data
         {
             return _context.Products.Include(p => p.User);
         }
-        
+
+        // criar fazer o codigo do metodo que vai comandar a combox
+        public IEnumerable<SelectListItem> GetComboProducts()
+        {
+            // Criar a listagem dentro da combox 
+            var list = _context.Products.Select(p => new SelectListItem
+            {
+                Text = p.Name,
+                Value= p.Id.ToString(),
+
+            }).ToList();
+
+            // Inserir um texto padrao na combox--> "Select a product"
+            list.Insert(0, new SelectListItem
+            {
+                Text = "(Select a product)",
+                Value= "0"
+            });
+
+            return list;
+        }
     }
 }
