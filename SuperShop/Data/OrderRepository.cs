@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SuperShop.Data.Entities;
 using SuperShop.Helpers;
+using SuperShop.Models;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,6 +17,55 @@ namespace SuperShop.Data
             _context = context;
             _userHelper = userHelper;
         }
+
+
+        // Codigo do Metodo para Adicionar no carrinho os Items escolhidos na combox--->POST 
+        public async Task AddItemToOrderAsync(AddItemViewModel model, string userName)
+        {
+          /*Verificar o utilizador esta vazio que esta na web*/
+          var user= await _userHelper.GetUserByEmailAsync(userName);
+            if (user == null)
+            {
+                return;
+            }
+
+            /*Verificar se o produto esta vazio que esta na web*/
+            var product= await _context.Products.FindAsync(model.ProductId); 
+            if (product == null)
+            {
+                return;
+            }
+
+            /*Variavel que guarda o produto e o utilizador*/
+            var orderDetailTemp = await _context.OrderDetailsTemp
+                .Where(odt => odt.User == user && odt.Product==product)
+                .FirstOrDefaultAsync();
+
+            /*Caso a variavel orderDetailTemp estiver vazio, entao vamos criar um novo detalhe da encomenda */
+            if (orderDetailTemp == null)
+            {
+                orderDetailTemp = new OrderDetailTemp
+                {
+                    Price = product.Price,
+                    Product = product,
+                    Quantity = model.Quantity,
+                    User = user
+                };
+
+                /*Adicionar o objecto novo*/
+                _context.OrderDetailsTemp.Add(orderDetailTemp);
+
+            }
+            else // caso nao estiver vazio, vamos executar o seguinte
+            {
+                orderDetailTemp.Quantity += model.Quantity;
+                _context.OrderDetailsTemp.Update(orderDetailTemp); // fazer o update
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+
 
         public async Task<IQueryable<OrderDetailTemp>> GetDetailTempsAsync(string userName)
         {
@@ -61,5 +111,23 @@ namespace SuperShop.Data
             .OrderByDescending(o => o.OrderDate);
         }
 
+
+        // Codigo do Metodo para modificar a encomenda escolhida na web---> POST
+        public async Task ModifyOrderDetailTempQuantityAsync(int id, double quantity)
+        {
+            /*Guardar os detalhes da encomenda na variavel para verificar se esta nulo ou nao*/
+            var orderDetailTemp = await _context.OrderDetailsTemp.FindAsync(id);
+            if (orderDetailTemp == null)
+            {
+                return;
+            }
+            orderDetailTemp.Quantity += quantity;
+            if(orderDetailTemp.Quantity > 0)
+            {
+                _context.OrderDetailsTemp.Update(orderDetailTemp);
+                await _context.SaveChangesAsync();
+            }
+            
+        }
     }
 }

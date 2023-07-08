@@ -1,4 +1,5 @@
 ﻿using SuperShop.Data.Entities;
+using SuperShop.Models;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,7 +10,16 @@ namespace SuperShop.Data
         // metodo que serve para devolve (Mostrar) todas as encomendas feitas por um user(Utilizador);
         Task<IQueryable<Order>> GetOrderAsync(string userName);
 
+
+
         Task<IQueryable<OrderDetailTemp>> GetDetailTempsAsync(string userName);
 
+
+        // Metodo para Adicionar no carrinho os Items escolhidos na combox--->POST
+        Task AddItemToOrderAsync(AddItemViewModel model, string userName);
+
+
+        // Metodo para modificar a encomenda escolhida na web---> POST
+        Task ModifyOrderDetailTempQuantityAsync(int id, double quantity);
     }
 }

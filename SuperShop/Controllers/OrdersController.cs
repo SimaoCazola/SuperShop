@@ -26,7 +26,7 @@ namespace SuperShop.Controllers
             return View(model);
         }
 
-        // IAction do Tipo Create para mostrar os ordersDetails
+        // IAction do Tipo CREATE para mostrar os ordersDetails
         public async Task<IActionResult> Create()
         {
             // Guardar na variavel model todas informacoes ja com os codigos para mostrar na view
@@ -34,7 +34,7 @@ namespace SuperShop.Controllers
             return View(model);
         }
 
-        // Fazer a IAction do botao AddProduct da Combox
+        // Mostrar a view do botao AddProduct da Combox--> CREATE
         public IActionResult AddProduct()
         {
             var model = new AddItemViewModel
@@ -43,6 +43,19 @@ namespace SuperShop.Controllers
                 Products = _productRepository.GetComboProducts()
             };
             return View(model);
+        }
+
+        // Executar as funcoes do botao AddProduct da Combox--> POST
+        [HttpPost]
+        public async Task<IActionResult> AddProduct(AddItemViewModel model)
+        {
+            /*Verficar primeiro se o model e valido*/
+            if (ModelState.IsValid)
+            {
+                await _orderRepository.AddItemToOrderAsync(model, this.User.Identity.Name);   
+                return RedirectToAction("Create");
+            }
+            return View(model); 
         }
     }
 }
