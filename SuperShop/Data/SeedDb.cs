@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using SuperShop.Data.Entities;
 using SuperShop.Helpers;
 using System;
@@ -21,7 +22,8 @@ namespace SuperShop.Data
 
         public async Task SeedAsync()
         {
-            await _context.Database.EnsureCreatedAsync(); // Cria a base de dados caso ainda nao estiver criada
+            await _context.Database.MigrateAsync(); // Cria a migracao e a base de dados ao mesmo tempo
+            /*await _context.Database.EnsureCreatedAsync();*/ // Cria a base de dados caso ainda nao estiver criada
 
             await _userHelper.CheckRoleAsync("Admin");
             await _userHelper.CheckRoleAsync("Customer");
