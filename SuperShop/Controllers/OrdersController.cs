@@ -57,5 +57,42 @@ namespace SuperShop.Controllers
             }
             return View(model); 
         }
+
+
+        // POST do Delete
+        public async Task<IActionResult> DeleteItem(int? id)
+        {
+            if(id==null)
+            {
+                return NotFound();
+            }
+            await _orderRepository.DeleteDetailTempAsync(id.Value);
+            return RedirectToAction("Create");
+        }
+
+
+        // POST Increase
+        public async Task<IActionResult> Increase(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            await _orderRepository.ModifyOrderDetailTempQuantityAsync(id.Value,1);
+            return RedirectToAction("Create");
+        }
+
+
+        // POST Decrease
+        public async Task<IActionResult> Decrease(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            await _orderRepository.ModifyOrderDetailTempQuantityAsync(id.Value, -1);
+            return RedirectToAction("Create");
+        }
+
     }
 }

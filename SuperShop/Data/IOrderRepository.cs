@@ -21,5 +21,10 @@ namespace SuperShop.Data
 
         // Metodo para modificar a encomenda escolhida na web---> POST
         Task ModifyOrderDetailTempQuantityAsync(int id, double quantity);
+
+
+        // Metodo para APAGAR a encomenda escolhida na web---> POST
+        Task DeleteDetailTempAsync(int id);   
+
     }
 }
