@@ -16,8 +16,7 @@
     },
     "mssql4": {
       "type": "mssql",
-      "connectionId": "ConnectionStrings:DefaultConnectionAna",
-      "dynamicId": null
+      "connectionId": "ConnectionStrings:SOFIA"
     }
   }
 }

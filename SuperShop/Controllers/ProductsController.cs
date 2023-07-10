@@ -14,7 +14,7 @@ using SuperShop.Models;
 
 namespace SuperShop.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class ProductsController : Controller
     {
         private readonly IProductRepository _productRepository;
@@ -56,7 +56,7 @@ namespace SuperShop.Controllers
             return View(product);
         }
 
-        [Authorize(Roles = "Admin")]
+       
         // GET: Products/Create
         public IActionResult Create()
         {
@@ -200,12 +200,30 @@ namespace SuperShop.Controllers
         // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")] 
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var product = await _productRepository.GetByIdAsync(id);
-           await _productRepository.DeleteAsync(product);
-            return RedirectToAction(nameof(Index));
-        }
+            try
+            {
+                await _productRepository.DeleteAsync(product);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException != null && ex.InnerException.Message.Contains("DELETE"))
+                {
+                    ViewBag.ErrorTitle = $"{product.Name} provavelmente esta aser usado!!";
+                    ViewBag.ErrorMessage = $"{product.Name} não podem ser apagado visto haverem encomendas que o usam.</br></br>" +
+                        $"Expermenta primeiro apagar todas encomendas que estao a usar," +
+                        $"e torne novamente apaga-lo";
+                }
+
+                return View("Error");
+            }
+           
+          
+        }   
 
         public IActionResult ProductNotFound()
         {

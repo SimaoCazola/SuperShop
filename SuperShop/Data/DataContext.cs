@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SuperShop.Data.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SuperShop.Data
@@ -22,6 +23,26 @@ namespace SuperShop.Data
             
         }
 
-       
+        // O CODIGO ESTA COMENTADO PORQUE VAMOS APLICAR OUTRO CODIGO, MAS CASO NAO QUEIRA APLICAR O OUTRO CODIGO ELA É UTIL
+        // HABILITAR A REGRA EM APAGAR EM CASCATA (CASCADE DELETE RULE)
+        // Ativar o cascade para apagar os produtos em todas as tabelas assim que foi apagado na web
+        // Para codigo fique habilitado é necesario primeiro fazer o migration e mandar a Base de dados abaixo
+        
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    var cascadeFKs = modelBuilder.Model
+        //        .GetEntityTypes()
+        //        .SelectMany(t => t.GetForeignKeys())
+        //        .Where(fk => !fk.IsOwnership && fk.DeleteBehavior == DeleteBehavior.Cascade);
+                
+        //    foreach(var fk in cascadeFKs)
+        //    {
+        //        fk.DeleteBehavior = DeleteBehavior.Restrict;
+        //    }
+
+        //    base.OnModelCreating(modelBuilder);
+        
+        //}
+
     }
 }

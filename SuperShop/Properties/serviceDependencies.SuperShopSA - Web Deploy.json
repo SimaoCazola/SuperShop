@@ -4,8 +4,7 @@
       "secretStore": "AzureAppSettings",
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/supershopdbsofia/databases/SuperShop_db",
       "type": "mssql.azure",
-      "connectionId": "ConnectionStrings:DefaultConnectionAna",
-      "dynamicId": null
+      "connectionId": "ConnectionStrings:SOFIA"
     }
   }
 }

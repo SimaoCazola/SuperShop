@@ -131,13 +131,13 @@
 
             //CODIGO DO DELETE
 
-            $("#btnNoDelete").click(function () {
+            $("#btnNoDelete").click(function() {
                 $("#deleteDialog").modal("hide");
                 return false;
             });
 
-            $("#btnYesDelete").click(function () {
-                window.location.href = "/Orders/DeleteItem" + id;// DeleteItem é a ction que esta no final do codigo do html desta view
+            $("#btnYesDelete").click(function() {
+                window.location.href = "/Orders/DeleteItem/" + id; // DeleteItem é a ction que esta no final do codigo do html desta view
             });
 
 
