@@ -53,7 +53,7 @@ namespace SuperShop
             
             services.AddScoped<IProductRepository, ProductRepository>();  // cria o objecto e depois apaga quando criar novo objecto com os mesmos dados ou tipo
             services.AddScoped<IOrderRepository, OrderRepository>();
-
+            services.AddScoped<ICountryRepository, CountryRepository>();
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/Account/NotAuthorized";

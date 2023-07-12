@@ -16,7 +16,7 @@ namespace SuperShop.Data.Entities
         public ICollection<City> Cities { get; set; }
 
         [Display(Name ="Number of cities")]
-        public int NumberCities { get; set; }
+        public int NumberCities => Cities == null ? 0 : Cities.Count; // Propriedade que calcula a cidade
 
     }
 }

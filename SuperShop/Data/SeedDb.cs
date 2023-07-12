@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SuperShop.Data.Entities;
 using SuperShop.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,6 +29,24 @@ namespace SuperShop.Data
             await _userHelper.CheckRoleAsync("Admin");
             await _userHelper.CheckRoleAsync("Customer");
 
+            // Adicionar Paises, e cidades nas tabelas para arrancar compo defaulty
+            if(!_context.Countries.Any())
+            {
+                var cities = new List<City>();
+                cities.Add(new City {Name = "Lisboa"});
+                cities.Add(new City { Name = "Porto" });
+                cities.Add(new City { Name = "Faro" });
+
+                _context.Countries.Add(new Country
+                {
+                    Cities = cities,
+                    Name = "Portugal"
+                });
+
+                //Gravamos na base de dados
+                await _context.SaveChangesAsync();
+            }
+
             var user = await _userHelper.GetUserByEmailAsync("cazolasimao@gmail.com");
 
             if(user == null)
@@ -35,10 +54,13 @@ namespace SuperShop.Data
                 user = new User
                 {
                     FirstName = "Simao",
-                    LastName= "Cazola",
-                    Email="cazolasimao@gmail.com",
+                    LastName = "Cazola",
+                    Email = "cazolasimao@gmail.com",
                     UserName = "cazolasimao@gmail.com",
-                    PhoneNumber="914105858"
+                    PhoneNumber = "914105858",
+                    Address = "Rua Jau 33",
+                    CityId = _context.Countries.First().Cities.FirstOrDefault().Id,
+                    City = _context.Countries.FirstOrDefault().Cities.FirstOrDefault()
                 };
                 var result= await _userHelper.AddUserAsync(user, "123456");
                 if(result!=IdentityResult.Success)
