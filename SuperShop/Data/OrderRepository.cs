@@ -120,6 +120,22 @@ namespace SuperShop.Data
             await _context.SaveChangesAsync();
         }
 
+
+
+        // Metodo Que retorna a data de entrega na view
+        public async Task DeliverOrder(DeliveryViewModel model)
+        {
+            var order = await _context.Orders.FindAsync(model.Id);
+            if(order == null)
+            {
+                return;
+            }
+
+            order.DeliverDate = model.DeliverDate;   // Guardar na variavel order a data do modelo
+            _context.Orders.Update(order);          // Atualiza na memoria
+            await _context.SaveChangesAsync();      // Guardar na base de dados
+        }
+
         public async Task<IQueryable<OrderDetailTemp>> GetDetailTempsAsync(string userName)
         {
             var user = await _userHelper.GetUserByEmailAsync(userName);
@@ -165,6 +181,15 @@ namespace SuperShop.Data
             .ThenInclude(p => p.Product)
             .Where(o => o.User == user)
             .OrderByDescending(o => o.OrderDate);
+        }
+
+
+
+
+        // Codigo do Metodo Para mostrar a encomenda por ID do delivery---> CREATE
+        public async Task<Order> GetOrderAsync(int id)
+        {
+            return await _context.Orders.FindAsync(id); 
         }
 
 

@@ -18,6 +18,9 @@ namespace SuperShop.Data
 
         public DbSet<OrderDetailTemp> OrderDetailsTemp { get; set; } // Tabela dos OrderDetailTemp
 
+        public DbSet<Country> Countries { get; set; } // Tabela dos Paises
+
+        public DbSet<City> Cities { get; set; } // Tabela das cidades
         public DataContext(DbContextOptions<DataContext> options): base(options)
         {
             

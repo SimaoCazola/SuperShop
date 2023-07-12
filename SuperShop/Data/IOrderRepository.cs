@@ -30,5 +30,13 @@ namespace SuperShop.Data
         // Metodo para CONFIRMAR a encomenda escolhida na web---> POST
         Task<bool> ConfirmOrderAsync(string userName);
 
+        // Metodo para Mostrar a data de entrega---> 
+        Task DeliverOrder(DeliveryViewModel model);
+
+        // Metodo Para mostrar a encomenda por ID---> CREATE
+        Task<Order> GetOrderAsync(int id);  
+
+
+
     }
 }
