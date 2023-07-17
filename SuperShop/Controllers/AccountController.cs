@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using SuperShop.Data;
 using SuperShop.Data.Entities;
 using SuperShop.Helpers;
 using SuperShop.Models;
@@ -12,10 +13,12 @@ namespace SuperShop.Controllers
     public class AccountController : Controller
     {
         private readonly IUserHelper _userHelper;
+        private readonly ICountryRepository _countryRepository;
 
-        public AccountController(IUserHelper userHelper)
+        public AccountController(IUserHelper userHelper, ICountryRepository countryRepository)
         {
             _userHelper = userHelper;
+            _countryRepository = countryRepository;
         }
 
         // Create- Mostrar dados sem manipular
@@ -56,11 +59,19 @@ namespace SuperShop.Controllers
             return View(model);
         }
 
+        // GET: Visualizacao--- um modelo com dados e codigos tambem de visualizacao
         public IActionResult Register()
         {
-            return View();
+            var model = new RegisterNewUserViewModel
+            {
+                Countries = _countryRepository.GetComboCountries(),
+                Cities = _countryRepository.GetComboCities(0),
+            };
+
+            return View(model);
         }
 
+        // POST: Aqui é o que vai acontecer depois de clicar no botao register
         [HttpPost]
         public async Task<IActionResult> Register(RegisterNewUserViewModel model)
         {
@@ -69,12 +80,18 @@ namespace SuperShop.Controllers
                 var user = await _userHelper.GetUserByEmailAsync(model.Username);
                 if (user == null)
                 {
-                    user = new User
+                    var city = await _countryRepository.GetCityAsync(model.CityId);
+
+                    user = new User // Aqui tamos a criar um user novo (Objecto user)
                     {
-                        FirstName = model.Username,
+                        FirstName = model.FirstName,
                         LastName = model.LastName,
                         Email = model.Username,
                         UserName = model.Username,
+                        Address = model.Address,
+                        PhoneNumber = model.PhoneNumber,
+                        CityId = model.CityId,
+                        City = city
 
                     };
                     var result = await _userHelper.AddUserAsync(user, model.Password);
@@ -102,7 +119,7 @@ namespace SuperShop.Controllers
             return View(model);
         }
 
-        //Create
+        //GET
 
         public async Task<IActionResult> ChangeUser()
         {
@@ -111,9 +128,26 @@ namespace SuperShop.Controllers
             if (user != null)
             {
                 model.FirstName = user.FirstName;
-                model.LastName = user.LastName; 
+                model.LastName = user.LastName;
+                model.Address = user.Address;
+                model.PhoneNumber = user.PhoneNumber;
+
+                var city = await _countryRepository.GetCityAsync(user.CityId);
+                if (city != null)
+                {
+                    var country = await _countryRepository.GetCountryAsync(city);
+                    if (country != null)
+                    {
+                        model.CountryId = country.Id;
+                        model.Cities = _countryRepository.GetComboCities(country.Id);
+                        model.Countries = _countryRepository.GetComboCountries();
+                        model.CityId = user.CityId;
+                    }
+                }
             }
 
+            model.Cities = _countryRepository.GetComboCities(model.CountryId);
+            model.Countries = _countryRepository.GetComboCountries();
             return View(model);
         }
 
@@ -125,23 +159,29 @@ namespace SuperShop.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
-
                 if (user != null)
                 {
+                    var city = await _countryRepository.GetCityAsync(model.CityId);
+
                     user.FirstName = model.FirstName;
                     user.LastName = model.LastName;
+                    user.Address = model.Address;
+                    user.PhoneNumber = model.PhoneNumber;
+                    user.CityId = model.CityId;
+                    user.City = city;
+
                     var response = await _userHelper.UpdateUserAsynce(user);
-                    if(response.Succeeded)
+                    if (response.Succeeded)
                     {
-                        ViewBag.UserMessage = "User Updated!";
+                        ViewBag.UserMessage = "User updated!";
                     }
                     else
                     {
                         ModelState.AddModelError(string.Empty, response.Errors.FirstOrDefault().Description);
-
                     }
                 }
             }
+
             return View(model);
         }
 
@@ -186,6 +226,16 @@ namespace SuperShop.Controllers
         {
             return View();
         }
-        
+
+        //-- VERY IMPORTANT----------------
+        // Metodo Auxiliar Post que retorna as cidades e os paises 
+        [HttpPost]
+        [Route("Account/GetCitiesAsync")]
+        public async Task<JsonResult> GetCitiesAsync(int countryId)
+        {
+            var country = await _countryRepository.GetCountriesWithCitiesAsync(countryId);
+            return Json(country.Cities.OrderBy(c => c.Name));
+        }
+
     }
 }

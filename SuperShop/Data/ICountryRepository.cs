@@ -1,5 +1,7 @@
-﻿using SuperShop.Data.Entities;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using SuperShop.Data.Entities;
 using SuperShop.Models;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,6 +30,14 @@ namespace SuperShop.Data
 
         //Metodo que retornar o apagar cidade
         Task<int> DeleteCityAsync(City city);
+        // Retorna uma combobox com os paises
+        IEnumerable<SelectListItem> GetComboCountries();
+
+        // Retorna uma combobox com as cidades
+        IEnumerable<SelectListItem> GetComboCities(int countryId);
+
+        // Retorna um pais e uma cidade
+        Task<Country> GetCountryAsync(City city);
 
     }
 }
