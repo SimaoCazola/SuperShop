@@ -68,7 +68,8 @@ namespace SuperShop.Data
                     throw new InvalidOperationException("User not created in Seed");
                 }
                 await _userHelper.AddUserToRoleAsync(user, "Admin");
-                
+                var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                await _userHelper.ConfirmEmailAsync(user, token);
             }
 
             var isInRole = await _userHelper.IsUserInRoleAsync(user, "Admin");
