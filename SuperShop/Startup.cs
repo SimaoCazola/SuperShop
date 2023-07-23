@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vereyon.Web;
 
 namespace SuperShop
 {
@@ -65,6 +66,8 @@ namespace SuperShop
                 cfg.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
             });
 
+
+            services.AddFlashMessage();
             services.AddTransient<SeedDb>();// cria o objecto e apaga e ja nao cria objecto do mesmo tipo
             services.AddScoped<IUserHelper,UserHelper>();
             services.AddScoped<IBlobHelper, BlobHelper>(); // Passo 55: Adicionar servico das imagens
