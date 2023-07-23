@@ -26,25 +26,51 @@ namespace SuperShop.Data
             
         }
 
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Country>()
+                .HasIndex(c => c.Name)
+                .IsUnique();
+
+
+            modelBuilder.Entity<Product>()
+                .Property(p => p.Price)
+                .HasColumnType("decimal(18,2)");
+
+
+            modelBuilder.Entity<OrderDetailTemp>()
+               .Property(p => p.Price)
+               .HasColumnType("decimal(18,2)");
+
+
+            modelBuilder.Entity<OrderDetail>()
+              .Property(p => p.Price)
+              .HasColumnType("decimal(18,2)");
+
+
+            base.OnModelCreating(modelBuilder);
+        }
+
         // O CODIGO ESTA COMENTADO PORQUE VAMOS APLICAR OUTRO CODIGO, MAS CASO NAO QUEIRA APLICAR O OUTRO CODIGO ELA É UTIL
         // HABILITAR A REGRA EM APAGAR EM CASCATA (CASCADE DELETE RULE)
         // Ativar o cascade para apagar os produtos em todas as tabelas assim que foi apagado na web
         // Para codigo fique habilitado é necesario primeiro fazer o migration e mandar a Base de dados abaixo
-        
+
         //protected override void OnModelCreating(ModelBuilder modelBuilder)
         //{
         //    var cascadeFKs = modelBuilder.Model
         //        .GetEntityTypes()
         //        .SelectMany(t => t.GetForeignKeys())
         //        .Where(fk => !fk.IsOwnership && fk.DeleteBehavior == DeleteBehavior.Cascade);
-                
+
         //    foreach(var fk in cascadeFKs)
         //    {
         //        fk.DeleteBehavior = DeleteBehavior.Restrict;
         //    }
 
         //    base.OnModelCreating(modelBuilder);
-        
+
         //}
 
     }
